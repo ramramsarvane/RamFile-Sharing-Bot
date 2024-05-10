@@ -122,6 +122,10 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from pyrogram import filters
+
+
+
 @Bot.on_message(filters.command("start") & filters.private)
 async def not_joined(client: Client, message: Message):
     FORCE_SUB_CHANNELS = [-1001543718054, -1001755279044]
@@ -156,6 +160,7 @@ async def not_joined(client: Client, message: Message):
         quote=True,
         disable_web_page_preview=True
     )
+
 
 
     
