@@ -117,45 +117,53 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
 #=====================================================================================##
 
     
-    
-    
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 #from config import FORCE_SUB_CHANNELS
 
 @Bot.on_message(filters.command("start") & filters.private)
 async def not_joined(client: Client, message: Message):
-    FORCE_SUB_CHANNEL = [-1001543718054,-1001755279044]
+    FORCE_SUB_CHANNELS = [-1001543718054, -1001755279044]
     buttons = []
-    for channel_id in FORCE_SUB_CHANNEL:
-        invite_link = await client.export_chat_invite_link(channel_id)
-        buttons.append(
-            [InlineKeyboardButton("Join Channel", url=invite_link)]
-        )
+    
+    # Check if the user has joined all the specified channels
+    joined_channels = []
+    for channel_id in FORCE_SUB_CHANNELS:
+        try:
+            await client.get_chat_member(channel_id, message.from_user.id)
+            joined_channels.append(channel_id)
+        except UserNotParticipant:
+            invite_link = await client.export_chat_invite_link(channel_id)
+            buttons.append([InlineKeyboardButton("Join Channel", url=invite_link)])
 
-    try:
-        buttons.append(
-            [
-                InlineKeyboardButton(
-                    text='Try Again',
-                    url=f"https://t.me/{client.username}?start={message.command[1]}"
-                )
-            ]
-        )
-    except IndexError:
-        pass
+    # If user has joined all channels, send the message with the buttons
+    if len(joined_channels) == len(FORCE_SUB_CHANNELS):
+        try:
+            buttons.append(
+                [
+                    InlineKeyboardButton(
+                        text='Try Again',
+                        url=f"https://t.me/{client.username}?start={message.command[1]}"
+                    )
+                ]
+            )
+        except IndexError:
+            pass
 
-    await message.reply(
-        text=FORCE_MSG.format(
-            first=message.from_user.first_name,
-            last=message.from_user.last_name,
-            username=None if not message.from_user.username else '@' + message.from_user.username,
-            mention=message.from_user.mention,
-            id=message.from_user.id
-        ),
-        reply_markup=InlineKeyboardMarkup(buttons),
-        quote=True,
-        disable_web_page_preview=True
-    )
+        await message.reply(
+            text=FORCE_MSG.format(
+                first=message.from_user.first_name,
+                last=message.from_user.last_name,
+                username=None if not message.from_user.username else '@' + message.from_user.username,
+                mention=message.from_user.mention,
+                id=message.from_user.id
+            ),
+            reply_markup=InlineKeyboardMarkup(buttons),
+            quote=True,
+            disable_web_page_preview=True
+        )
+    else:
+        await message.reply_text("Please join all the required channels to proceed.")
+
     
 
 @Bot.on_message(filters.command('users') & filters.private & filters.user(ADMINS))
