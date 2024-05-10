@@ -120,12 +120,12 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
     
     
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from config import FORCE_SUB_CHANNELS
+from config import FORCE_SUB_CHANNEL
 
 @Bot.on_message(filters.command("start") & filters.private)
 async def not_joined(client: Client, message: Message):
     buttons = []
-    for channel_id in FORCE_SUB_CHANNELS:
+    for channel_id in FORCE_SUB_CHANNEL:
         invite_link = await client.export_chat_invite_link(channel_id)
         buttons.append(
             [InlineKeyboardButton("Join Channel", url=invite_link)]
