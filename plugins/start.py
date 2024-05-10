@@ -125,6 +125,21 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram import filters
 
 @Bot.on_message(filters.command("start") & filters.private)
+async def get_user_joined_channels(client: Client, user_id: int) -> List[int]:
+    """
+    Function to retrieve the list of channels a user has joined.
+    """
+    joined_channels = []
+    FORCE_SUB_CHANNELS = [-1001543718054, -1001755279044]
+    for channel_id in FORCE_SUB_CHANNELS:
+        try:
+            member = await client.get_chat_member(channel_id, user_id)
+            if member.status == "member":
+                joined_channels.append(channel_id)
+        except Exception as e:
+            print(f"Error checking membership for user {user_id} in channel {channel_id}: {e}")
+    return joined_channels
+    
 async def not_joined(client: Client, message: Message):
     FORCE_SUB_CHANNELS = [-1001543718054, -1001755279044]
     buttons = []
