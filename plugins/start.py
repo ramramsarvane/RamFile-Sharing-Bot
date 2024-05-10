@@ -121,22 +121,15 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
 #from config import FORCE_SUB_CHANNELS
 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-
-from pyrogram import filters
+from Powers.vars import FORCE_MSG
 
 @Bot.on_message(filters.command("start") & filters.private)
 async def not_joined(client: Client, message: Message):
     FORCE_SUB_CHANNELS = [-1001543718054, -1001755279044]
     buttons = []
 
-    # Check if the user has already joined any channels
-    user_joined_channels = await get_user_joined_channels(client, message.from_user.id)
-
     # Generate buttons for all specified channels
     for channel_id in FORCE_SUB_CHANNELS:
-        if channel_id in user_joined_channels:
-            continue  # Skip if user already joined this channel
-
         invite_link = await client.export_chat_invite_link(channel_id)
         buttons.append([InlineKeyboardButton("Join Channel", url=invite_link)])
 
