@@ -118,44 +118,41 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
 
     
     
+    
 @Bot.on_message(filters.command('start') & filters.private)
 async def not_joined(client: Client, message: Message):
-    # Read the FORCE_SUB_CHANNEL variable from config.py
-    force_sub_channels = [-1001543718054,-1001755279044]
-
-    buttons = []
-    for channel_id in force_sub_channels:
-        # Get the channel object from the given channel_id
-        channel = await client.get_chat(int(channel_id))
-        buttons.append([
+    buttons = [
+        [
             InlineKeyboardButton(
-                channel.title,
-                url=client.invitelink[channel.username]
-            )
-        ])
-
+                "Join Channel",
+                url = client.invitelink)
+        ]
+    ]
     try:
-        buttons.append([
-            InlineKeyboardButton(
-                text='Try Again',
-                url=f"https://t.me/{client.username}?start={message.command[1]}"
-            )
-        ])
+        buttons.append(
+            [
+                InlineKeyboardButton(
+                    text = 'Try Again',
+                    url = f"https://t.me/{client.username}?start={message.command[1]}"
+                )
+            ]
+        )
     except IndexError:
         pass
 
     await message.reply(
-        text=FORCE_MSG.format(
-            first=message.from_user.first_name,
-            last=message.from_user.last_name,
-            username=None if not message.from_user.username else '@' + message.from_user.username,
-            mention=message.from_user.mention,
-            id=message.from_user.id
-        ),
-        reply_markup=InlineKeyboardMarkup(buttons),
-        quote=True,
-        disable_web_page_preview=True
+        text = FORCE_MSG.format(
+                first = message.from_user.first_name,
+                last = message.from_user.last_name,
+                username = None if not message.from_user.username else '@' + message.from_user.username,
+                mention = message.from_user.mention,
+                id = message.from_user.id
+            ),
+        reply_markup = InlineKeyboardMarkup(buttons),
+        quote = True,
+        disable_web_page_preview = True
     )
+
 
 @Bot.on_message(filters.command('users') & filters.private & filters.user(ADMINS))
 async def get_users(client: Bot, message: Message):
