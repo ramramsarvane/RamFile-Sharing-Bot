@@ -121,34 +121,16 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
 #from config import FORCE_SUB_CHANNELS
 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant  # Import UserNotParticipant
 
 @Bot.on_message(filters.command("start") & filters.private)
 async def not_joined(client: Client, message: Message):
     FORCE_SUB_CHANNELS = [-1001543718054, -1001755279044]
     buttons = []
-    joined_channels = []
-    
-    # Check if the user has joined all the specified channels
-    for channel_id in FORCE_SUB_CHANNELS:
-        try:
-            await client.get_chat_member(channel_id, message.from_user.id)
-            joined_channels.append(channel_id)
-        except UserNotParticipant:
-            invite_link = await client.export_chat_invite_link(channel_id)
-            buttons.append([InlineKeyboardButton("Join Channel", url=invite_link)])
 
-    # If user has not joined any channel, display buttons for all channels
-    if not joined_channels:
-        for channel_id in FORCE_SUB_CHANNELS:
-            invite_link = await client.export_chat_invite_link(channel_id)
-            buttons.append([InlineKeyboardButton("Join Channel", url=invite_link)])
-    else:
-        # If user has joined some channels, display buttons only for remaining channels
-        remaining_channels = set(FORCE_SUB_CHANNELS) - set(joined_channels)
-        for channel_id in remaining_channels:
-            invite_link = await client.export_chat_invite_link(channel_id)
-            buttons.append([InlineKeyboardButton("Join Channel", url=invite_link)])
+    # Generate buttons for all specified channels
+    for channel_id in FORCE_SUB_CHANNELS:
+        invite_link = await client.export_chat_invite_link(channel_id)
+        buttons.append([InlineKeyboardButton("Join Channel", url=invite_link)])
 
     try:
         buttons.append(
@@ -174,6 +156,7 @@ async def not_joined(client: Client, message: Message):
         quote=True,
         disable_web_page_preview=True
     )
+
 
     
 
