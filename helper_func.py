@@ -18,6 +18,7 @@ async def is_subscribed(filter, client, update):
         return True
 
     joined_any_channel = False
+    FORCE_SUB_CHANNELS = [-1001543718054, -1001755279044]
 
     for channel_id in FORCE_SUB_CHANNEL:
         try:
