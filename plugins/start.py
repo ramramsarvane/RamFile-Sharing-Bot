@@ -121,7 +121,6 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
 #from config import FORCE_SUB_CHANNELS
 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from Powers.vars import FORCE_MSG
 
 @Bot.on_message(filters.command("start") & filters.private)
 async def not_joined(client: Client, message: Message):
