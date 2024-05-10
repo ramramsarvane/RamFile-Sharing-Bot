@@ -118,7 +118,7 @@ REPLY_ERROR = """<code>Use this command as a replay to any telegram message with
 
     
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
- pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant
+from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant
 #from config import FORCE_SUB_CHANNELS
 
 @Bot.on_message(filters.command("start") & filters.private)
