@@ -124,7 +124,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 @Bot.on_message(filters.command("start") & filters.private)
 async def not_joined(client: Client, message: Message):
-    FORCE_SUB_CHANNEL = [-1001543718054]
+    FORCE_SUB_CHANNEL = [-1001543718054,-1001755279044]
     buttons = []
     for channel_id in FORCE_SUB_CHANNEL:
         invite_link = await client.export_chat_invite_link(channel_id)
