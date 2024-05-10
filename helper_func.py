@@ -9,6 +9,7 @@ from config import FORCE_SUB_CHANNEL, ADMINS
 from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant
 from pyrogram.errors import FloodWait
 
+
 async def is_subscribed(filter, client, update):
     FORCE_SUB_CHANNEL = [-1001543718054, -1001755279044]
     if not FORCE_SUB_CHANNEL:
@@ -18,19 +19,15 @@ async def is_subscribed(filter, client, update):
     if user_id in ADMINS:
         return True
 
-    joined_any_channel = False
-    
-
     for channel_id in FORCE_SUB_CHANNEL:
         try:
             member = await client.get_chat_member(chat_id=channel_id, user_id=user_id)
-            if member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
-                joined_any_channel = True
-                break  # Exit the loop if the user has joined any channel
+            if member.status not in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER]:
+                return False  # If the user is not a member of any channel, return False
         except UserNotParticipant:
-            pass
+            return False  # If the user is not a member of any channel, return False
 
-    return joined_any_channel
+    return True  # If the loop completes without returning False, return True
 
 
 async def encode(string):
